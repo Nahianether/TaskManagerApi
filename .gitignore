@@ -1,38 +1,33 @@
-# Ignore build outputs
+# Build output
 bin/
 obj/
 out/
 
-# User-specific files
+# VS Code settings
 .vscode/
+
+# User-specific files
 *.user
 *.suo
 *.userosscache
 *.sln.docstates
 
-# Runtime generated files
+# SQLite and EF Core artifacts
 *.db
 *.sqlite
 *.log
 
-# EF Core migration binaries
-Migrations/*Designer.cs
+# EF Core migration generated files
 Migrations/*Snapshot.cs
+Migrations/*Designer.cs
 
-# VS Code settings
-.vscode/
-
-# ASP.NET secrets and environment files
-secrets.json
+# Environment/secret files
 *.env
+secrets.json
 
 # OS junk
-*.DS_Store
+.DS_Store
 Thumbs.db
 
-# Rider
-.idea/
-*.sln.iml
-
-# Git folder settings
+# Git exclude itself
 !.gitignore
