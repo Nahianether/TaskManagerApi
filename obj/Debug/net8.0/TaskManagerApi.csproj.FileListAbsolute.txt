@@ -126,3 +126,5 @@ D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\TaskManagerApi.pdb
 D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\TaskManagerApi.genruntimeconfig.cache
 D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\ref\TaskManagerApi.dll
 D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\TaskManagerApi.sourcelink.json
+D:\Work\DotNetTestFolder\TaskManagerApi\bin\Debug\net8.0\AutoMapper.dll
+D:\Work\DotNetTestFolder\TaskManagerApi\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TaskManagerApi.Data;
+using TaskManagerApi.Dtos;
 using TaskManagerApi.Models;
+using TaskManagerApi.Services;
+using AutoMapper;
 
 namespace TaskManagerApi.Controllers;
 
@@ -9,78 +10,49 @@ namespace TaskManagerApi.Controllers;
 [Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly IUserService _service;
+    private readonly IMapper _mapper;
 
-    public UsersController(AppDbContext context)
+    public UsersController(IUserService service, IMapper mapper)
     {
-        _context = context;
+        _service = service;
+        _mapper = mapper;
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-    {
-        return await _context.Users.Include(u => u.Tasks).ToListAsync();
-    }
+    public async Task<ActionResult<UserReadDto>> GetUsers() =>
+        await _service.GetAllUsersAsync() is { Count: > 0 } users
+            ? Ok(_mapper.Map<List<UserReadDto>>(users))
+            : NoContent();
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
+    public async Task<ActionResult<UserReadDto>> GetUser(int id)
     {
-        var user = await _context.Users.Include(u => u.Tasks)
-                                       .FirstOrDefaultAsync(u => u.Id == id);
-        if (user == null) return NotFound();
-        return user;
+        var user = await _service.GetUserByIdAsync(id);
+        return user == null ? NotFound() : _mapper.Map<UserReadDto>(user);
     }
 
     [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(User user)
+    public async Task<ActionResult<UserReadDto>> CreateUser(UserCreateDto dto)
     {
-        int id;
-        var rnd = new Random();
-        do
-        {
-            id = rnd.Next(1000, 10000); // generate 4-digit number
-        }
-        while (await _context.Users.AnyAsync(u => u.Id == id));
-
-        user.Id = id;
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+        var user = _mapper.Map<User>(dto);
+        var created = await _service.CreateUserAsync(user);
+        var readDto = _mapper.Map<UserReadDto>(created);
+        return CreatedAtAction(nameof(GetUser), new { id = readDto.Id }, readDto);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUser(int id, User updatedUser)
+    public async Task<IActionResult> UpdateUser(int id, UserUpdateDto dto)
     {
-        if (id != updatedUser.Id)
-            return BadRequest("User ID mismatch.");
+        var existing = await _service.GetUserByIdAsync(id);
+        if (existing == null) return NotFound();
 
-        var existingUser = await _context.Users.FindAsync(id);
-        if (existingUser == null) return NotFound();
-
-        // Update only allowed fields
-        existingUser.Name = updatedUser.Name;
-        existingUser.Email = updatedUser.Email;
-        existingUser.PhoneNumber = updatedUser.PhoneNumber;
-        existingUser.Address = updatedUser.Address;
-        existingUser.ImageUrl = updatedUser.ImageUrl;
-
-        await _context.SaveChangesAsync();
+        _mapper.Map(dto, existing);
+        await _service.UpdateUserAsync(id, existing);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(int id)
-    {
-        var user = await _context.Users
-                                 .Include(u => u.Tasks)
-                                 .FirstOrDefaultAsync(u => u.Id == id);
-        if (user == null) return NotFound();
-
-        // Remove all tasks assigned to this user first (EF cascade should handle this if set)
-        _context.Tasks.RemoveRange(user.Tasks);
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-
-        return NoContent();
-    }
+    public async Task<IActionResult> DeleteUser(int id) =>
+        await _service.DeleteUserAsync(id) ? NoContent() : NotFound();
 }
