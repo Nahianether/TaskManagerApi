@@ -1,0 +1,38 @@
+# Ignore build outputs
+bin/
+obj/
+out/
+
+# User-specific files
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Runtime generated files
+*.db
+*.sqlite
+*.log
+
+# EF Core migration binaries
+Migrations/*Designer.cs
+Migrations/*Snapshot.cs
+
+# VS Code settings
+.vscode/
+
+# ASP.NET secrets and environment files
+secrets.json
+*.env
+
+# OS junk
+*.DS_Store
+Thumbs.db
+
+# Rider
+.idea/
+*.sln.iml
+
+# Git folder settings
+!.gitignore

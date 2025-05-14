@@ -125,3 +125,4 @@ D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\refint\TaskManagerApi.d
 D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\TaskManagerApi.pdb
 D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\TaskManagerApi.genruntimeconfig.cache
 D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\ref\TaskManagerApi.dll
+D:\Work\DotNetTestFolder\TaskManagerApi\obj\Debug\net8.0\TaskManagerApi.sourcelink.json
